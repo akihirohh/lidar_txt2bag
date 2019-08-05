@@ -1,0 +1,10 @@
+<launch>
+
+  
+  <node pkg="lidar_txt2bag" type="lidar_change_frame_node" name="lidar_change_frame_node" output="screen">
+  </node>
+
+  <node pkg="rosbag" type="play" name="player" args="--clock /home/hiro/Data/20180412_bagfiles_lanapre/2018-04-12-09-40-39original.bag --topics /scan" output="screen" >
+    <param name="name" value="/home/hiro/remapped_scan2"/>
+  	</node>  
+</launch>
