@@ -15,10 +15,10 @@ int main (int argc, char** argv)
     std::string node_name = ros::this_node::getName();
 
     ros::NodeHandle _nh("~");
-    std::string folder_aux, name;
-    _nh.getParam("file", folder_aux);
-    _nh.getParam("name", name);
-    ROS_INFO_STREAM("Got param: " << folder_aux);
+    std::string folder_aux, bag_name, frame_id;
+    _nh.getParam("txtpath2import", folder_aux);
+    _nh.getParam("bagpath2save", bag_name);
+    _nh.getParam("frame_id", frame_id);
 
     sensor_msgs::LaserScan lidar_msg;
     std_msgs::Header header;
@@ -28,7 +28,7 @@ int main (int argc, char** argv)
 
     ros::Publisher pub_scan = nh.advertise<sensor_msgs::LaserScan>("scan",1);
     rosbag::Bag bag;
-    bag.open((name+".bag").c_str(), rosbag::bagmode::Write);
+    bag.open((bag_name+".bag").c_str(), rosbag::bagmode::Write);
 
     // Files
 	std::fstream log_file, perception_file, aux_file;
@@ -50,13 +50,20 @@ int main (int argc, char** argv)
     lidar_input_file.open(folder_aux.c_str(), std::fstream::in);
     if(!lidar_input_file.is_open()) 
     {
-        ROS_INFO_STREAM( "\n\n\nCheck " << complete_lidar_name << "...\n\n\n" );
+        ROS_INFO_STREAM( "\n\n\nCheck " << folder_aux << "...\n\n\n" );
         exit(1);
     }
 
     current_ts = 0;
     loop = 1;
-    double nsecs;
+    lidar_msg.angle_min = -2.35619449615;
+    lidar_msg.angle_max = 2.35619449615;
+    lidar_msg.angle_increment = 0.00436332309619;
+    lidar_msg.time_increment = 1.73611151695e-05;
+    lidar_msg.range_min = 0.0230000000447;
+    lidar_msg.range_max = 30.0;
+    header.frame_id = frame_id;
+
     while(loop)
     {		
         if (!getline(lidar_input_file, lidar_line)) 
@@ -64,7 +71,7 @@ int main (int argc, char** argv)
             loop = 0;
         }
         previous_lidar_ts = current_ts;
-        parseLidarFromFile(lidar_line, current_ts, lidar_readings);         
+        parseLidarFromFile(lidar_line, current_ts, lidar_readings); 
         if(previous_lidar_ts != current_ts)	
         {                   
             if(n_done == 0) previous_lidar_ts = current_ts;
@@ -73,14 +80,13 @@ int main (int argc, char** argv)
             {
                 lidar_msg.ranges.push_back(lidar_readings[i]*0.001);
             }
-            header.stamp.sec = (int) current_ts*0.001;
-
-            nsecs = (current_ts*0.001 - header.stamp.sec)*pow(10,9) ;
-            header.stamp.nsec = nsecs;
+            header.stamp = ros::Time::now(); 
             lidar_msg.header = header;
+            lidar_msg.scan_time = (current_ts-previous_lidar_ts)*pow(10,-3);
 
             pub_scan.publish(lidar_msg);
-            ROS_INFO_STREAM(previous_lidar_ts << "\t" << current_ts << "\t" << (current_ts-previous_lidar_ts)*pow(10,-3) << " nsecs: " << nsecs << " sec: " << header.stamp.sec << " current_ts/1000: " << current_ts*0.001 );
+
+            ROS_INFO_STREAM("prev: " << previous_lidar_ts << "\tcur: " << current_ts << "\tdiff: " << (current_ts-previous_lidar_ts)*pow(10,-3));
 
             bag.write("scan", ros::Time::now(), lidar_msg);
             ros::Duration((current_ts-previous_lidar_ts)*pow(10,-3)).sleep();

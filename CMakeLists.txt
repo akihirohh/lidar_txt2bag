@@ -27,3 +27,10 @@ add_executable(${PROJECT_NAME}_node src/lidar_txt2bag_node.cpp)
 target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
 )
+
+add_executable(lidar_change_frame_node src/lidar_change_frame.cpp)
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(lidar_change_frame_node
+  ${catkin_LIBRARIES}
+)

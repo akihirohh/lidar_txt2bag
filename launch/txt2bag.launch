@@ -1,0 +1,11 @@
+<launch>
+
+<param name="use_sim_time" value="false"/>
+
+<node pkg="lidar_txt2bag" type="lidar_txt2bag_node" name="lidar_txt2bag" output="screen">
+  <param name="txtpath2import" value="/media/hiro/Data/Data/20190110_milho_lucas/corn_1051_new_height_2000mm/collections/20190110_10h35m07s_full_42,2m_203s/lidar/lidar_log"/>
+  <param name="bagpath2save" value="/home/hiro/bagfiles/corn_1051_new_curved_height_500mm"/>
+  <param name="frame_id" value="base_link"/>
+</node>
+
+</launch>
