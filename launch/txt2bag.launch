@@ -1,0 +1,10 @@
+<launch>
+
+<param name="use_sim_time" value="false"/>
+
+<node pkg="lidar_txt2bag" type="lidar_txt2bag_node" name="lidar_txt2bag" output="screen">
+</node>
+
+<rosparam command="load" file="$(find lidar_txt2bag)/params/row1_10h22movie2.yaml" />-->
+
+</launch>

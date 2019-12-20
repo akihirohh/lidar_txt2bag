@@ -1,0 +1,4 @@
+lidar_txt2bag: {
+  bagpath2save: /media/hiro/Data/Data/2018_jfr/jfr_gt3_0-10_0-05/row1_10h22movie2/20170920_10h22m23slidar_ts,
+  frame_id: laser, 
+  txtpath2import: /media/hiro/Data/Data/2018_jfr/jfr_gt3_0-10_0-05/row1_10h22movie2/20170920_10h22m23slidar_ts.txt}
