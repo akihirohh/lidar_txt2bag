@@ -1,0 +1,4 @@
+lidar_txt2bag: {
+  bagpath2save: /media/hiro/Data/Data/2020/leakey/leakey_Plot_unknown_Row_209_2019-07-25-full,
+  frame_id: laser, 
+  txtpath2import: /media/hiro/Data/Data/2020/leakey/leakey_Plot_unknown_Row_209_2019-07-25/lidar/lidar_log}
